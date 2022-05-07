@@ -58,9 +58,25 @@ routet.post('/upAudioBook',upload.fields([{name:'fileAudio'}]),async(req,res)=>{
 });
             
 routet.post('/showbooksuser',controller.findBookUser)
-routet.post('/addbook',controller.store)
+
+routet.post('/addbook',upload.fields([{
+  name: 'coverImage', maxCount: 1
+}, {
+  name: 'filePDF', maxCount: 1
+}, {
+  name: 'fileAudio', maxCount: 1
+}]),controller.store)
+
 routet.post('/showbook',controller.show)
-routet.post('/updateBook',controller.update)
+
+routet.post('/updateBook',upload.fields([{
+  name: 'coverImage', maxCount: 1
+}, {
+  name: 'filePDF', maxCount: 1
+}, {
+  name: 'fileAudio', maxCount: 1
+}]),controller.update)
+
 routet.post('/deleteBook',controller.deleteallLikes)
 routet.post('/homebooks',controller.findHomeBook)
 routet.post('/books/srch',controller.findBooks)

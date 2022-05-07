@@ -57,7 +57,6 @@ exports.findBookUser = async (req, res)=>{
 exports.show = (req, res, next) => {
     let BookId = req.body.bookid
     Book.findById(BookId)
-    //.populate('like','name')
     .then(response => {
         res.json({
             response
@@ -120,13 +119,12 @@ exports.store = async(req, res) => {
         author : req.body.author, 
         price : req.body.price,
         description : req.body.description,
-        coverImage : req.body.coverImage,
+        coverImage : req.files.coverImage[0].filename,
         category:  req.body.category,
         nbPages:  req.body.nbPages,
-        filePDF:  req.body.filePDF,
-        fileAudio:  req.body.fileAudio,
-        userid:  req.body.userid,
-        isPodcast: req.body.isPodcast
+        filePDF:  req.files.filePDF[0].filename,
+        fileAudio:  req.files.fileAudio[0].filename,
+        userid: req.body.userid
     })
     await book.save()
         .then(data => {
@@ -149,11 +147,11 @@ exports.update = (req, res, next) => {
             author : req.body.author,
             price : req.body.price,
             description : req.body.description,
-            coverImage : req.body.coverImage,
+            coverImage : req.files.coverImage[0].filename,
             category : req.body.category,
             nbPages : req.body.nbPages,
-            filePDF:  req.body.filePDF,
-            fileAudio:  req.body.fileAudio
+            filePDF:  req.files.filePDF[0].filename,
+            fileAudio:  req.files.fileAudio[0].filename,
     }
 
     Book.findByIdAndUpdate(BookId, {$set: updatedData})
@@ -221,14 +219,14 @@ exports.deleteallLikes = async(req, res, next) => {
 // Show Likes List From a Single Playlist
 exports.showLike = async(req, res, next) => {
     let bookid = req.body.bookid
-    let userId = req.body.userid
+    let userid = req.body.userid
     var usersSrch = []
     let isliked = false
     await Book.findById(bookid)
     .then(user => {
         var i = 0
         user.like.forEach(function(currentValue, index, arr){
-            if(currentValue == userId )
+            if(currentValue == userid )
             { 
                 
                 isliked = true
@@ -260,16 +258,15 @@ exports.showLike = async(req, res, next) => {
 // Update Likes in Books
 
 exports.addLikes = (req, res, next) => {
-    let BookId = req.body.bookid
+    let bookid = req.body.bookid
 
     let updatedData = {
-        like : req.body.userid
+        userid : req.body.userid
     }
     let updatedDatat = {
-        favBook : BookId
+        favBook : bookid
     }
-
-    Book.findByIdAndUpdate(BookId, {$push: updatedData})
+     Book.findByIdAndUpdate(bookid, {$push: updatedData})
     .then(() => {
         Userdb.findByIdAndUpdate(req.body.userid, {$push: updatedDatat})
         .then(() => {

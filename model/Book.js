@@ -4,7 +4,8 @@ const mongoose = require('mongoose');
 var bookschema = new mongoose.Schema({
     title : {
         type : String,
-        required: true
+        required: true,
+        unique: true
     },
     author : {
         type : String,
@@ -21,7 +22,8 @@ var bookschema = new mongoose.Schema({
     },
     coverImage : {
         type: String,
-        required : true
+        required : true,
+        default: "solidWhite.png" 
     },
     category : {
         type: String,
@@ -33,10 +35,13 @@ var bookschema = new mongoose.Schema({
     },
     filePDF :{
         type: String,
-        required : true
+        required : true,
+        default: "blank.pdf" 
     },
     fileAudio :{
-        type: String
+        type: String,
+        required: true,
+        default: "saunders.mp3" 
     },
     like : [{
         type: mongoose.Schema.Types.ObjectId, ref:"users"
