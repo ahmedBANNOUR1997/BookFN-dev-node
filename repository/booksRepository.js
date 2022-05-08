@@ -114,16 +114,22 @@ exports.findBooks = async (req, res)=>{
 //add new Book
 exports.store = async(req, res) => {
 
+
+    const bookcoverImage = req.files.coverImage[0].filename;
+    const bookfilePDF = req.files.filePDF[0].filename;
+    const bookfileAudio = req.files.fileAudio[0].filename;
+
+
     const book = new Book({
         title : req.body.title,
         author : req.body.author, 
         price : req.body.price,
         description : req.body.description,
-        coverImage : req.files.coverImage[0].filename,
+        coverImage : 'http://localhost:3000/uploads/books/' + bookcoverImage, 
         category:  req.body.category,
         nbPages:  req.body.nbPages,
-        filePDF:  req.files.filePDF[0].filename,
-        fileAudio:  req.files.fileAudio[0].filename,
+        filePDF:  'http://localhost:3000/uploads/books/' + bookfilePDF, 
+        fileAudio:  'http://localhost:3000/uploads/books/' + bookfileAudio, 
         userid: req.body.userid
     })
     await book.save()
@@ -142,16 +148,21 @@ exports.store = async(req, res) => {
 exports.update = (req, res, next) => {
     let BookId = req.body.bookid
 
+    const bookcoverImage = req.files.coverImage[0].filename;
+    const bookfilePDF = req.files.filePDF[0].filename;
+    const bookfileAudio = req.files.fileAudio[0].filename;
+
     let updatedData = {
             title : req.body.title,
             author : req.body.author,
             price : req.body.price,
             description : req.body.description,
-            coverImage : req.files.coverImage[0].filename,
+            coverImage : 'http://localhost:3000/uploads/books/' + bookcoverImage, 
             category : req.body.category,
             nbPages : req.body.nbPages,
-            filePDF:  req.files.filePDF[0].filename,
-            fileAudio:  req.files.fileAudio[0].filename,
+            filePDF:  'http://localhost:3000/uploads/books/' + bookfilePDF, 
+            fileAudio:  'http://localhost:3000/uploads/books/' + bookfileAudio, 
+            userid: req.body.userid
     }
 
     Book.findByIdAndUpdate(BookId, {$set: updatedData})
