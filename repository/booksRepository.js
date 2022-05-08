@@ -16,6 +16,22 @@ var Userdb = require('../model/model');
     })
 }
 
+
+exports.findViewsBooks = (req, res, next) => {
+    Book.find({ 'nbVue': { $gt: 0}}).populate('like')
+    .then(response => {
+        res.json({
+            response
+        })
+    })
+    .catch(error => {
+        res.json({
+            message: 'an error Occured!'
+        })
+    })
+}
+
+
 exports.findBookUser = async (req, res)=>{
     var search = req.body.txt;
     var usersSrch = []
@@ -56,7 +72,7 @@ exports.findBookUser = async (req, res)=>{
 // Show single Book
 exports.show = (req, res, next) => {
     let BookId = req.body.bookid
-    Book.findById(BookId)
+    Book.findById(BookId).populate('like')
     .then(response => {
         res.json({
             response
@@ -68,6 +84,7 @@ exports.show = (req, res, next) => {
         })
     })
 } 
+
 
 exports.findBooks = async (req, res)=>{
     var search = req.body.txt;
@@ -269,15 +286,16 @@ exports.showLike = async(req, res, next) => {
 // Update Likes in Books
 
 exports.addLikes = (req, res, next) => {
-    let bookid = req.body.bookid
+    let BOOKID = req.body.bookid
 
     let updatedData = {
-        userid : req.body.userid
+        like : req.body.userid
     }
     let updatedDatat = {
-        favBook : bookid
+        favBook : BOOKID
     }
-     Book.findByIdAndUpdate(bookid, {$push: updatedData})
+
+    Book.findByIdAndUpdate(BOOKID, {$push: updatedData})
     .then(() => {
         Userdb.findByIdAndUpdate(req.body.userid, {$push: updatedDatat})
         .then(() => {
@@ -301,16 +319,16 @@ exports.addLikes = (req, res, next) => {
 // Delete Like From Playlist
 
 exports.deleteLikes = (req, res, next) => {
-    let BookId = req.body.bookid
+    let BOOKID = req.body.bookid
   
     let updatedData = {
         like : req.body.userid
     }
     let updatedDatat = {
-        favBook : BookId
+        favBook : BOOKID
     }
 
-    Book.findByIdAndUpdate(BookId , {$pull: updatedData})
+    Book.findByIdAndUpdate(BOOKID , {$pull: updatedData})
     .then(() => {
         Userdb.findByIdAndUpdate(req.body.userid, {$pull: updatedDatat})
         .then(() => {

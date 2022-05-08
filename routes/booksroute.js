@@ -22,6 +22,8 @@ const fs = require("fs");
  *        description: This is the default response
  *  */
 routet.get('/allBooks',controller.index)
+routet.get('/allBooksWithViews',controller.findViewsBooks)
+
 routet.post('/upAudioBook',upload.fields([{name:'fileAudio'}]),async(req,res)=>{
         const files = req.files.file[0].filename
         var aux = 0

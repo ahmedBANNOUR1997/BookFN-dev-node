@@ -150,7 +150,7 @@ const fs = require("fs");
             exports.showListBooks = async (req, res, next) => {
                 let userid= req.body.userid
                 var listBooks = []
-                await Userdb.findById(userid)
+                await Userdb.findById(userid).populate('favBook')
                 .then(response => {
                         var i = 0
                         response.favBook.forEach(function(currentValue, index, arr){
@@ -678,7 +678,7 @@ exports.logingoogle = async (req, res)=>{
 exports.getUser = async (req, res)=>{ 
 
     var auth  = req.body.token;
-    Userdb.findOne({token: auth})
+    Userdb.findOne({token: auth}).populate('favBook')
     .then(data => {
         if(!data)
         { 
@@ -715,7 +715,7 @@ exports.getUserbyId = async (req, res)=>{
 
     var id  = req.body.id;
     
-           await Userdb.findById(id) 
+           await Userdb.findById(id).populate('favBook') 
             .then(dataid => {
                  if(!dataid)
                  { 
@@ -734,8 +734,8 @@ exports.getUserbyId = async (req, res)=>{
   
 exports.getUserid = async (req, res)=>{ 
 
-    var auth  = req.body.name;
-    Userdb.findOne({name: auth})
+    var auth  = req.body.email;
+    Userdb.findOne({email: auth}).populate('favBook')
     .then(data => {
         if(!data)
         { 

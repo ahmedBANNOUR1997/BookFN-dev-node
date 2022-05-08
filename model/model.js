@@ -62,10 +62,7 @@ var schema = new mongoose.Schema({
     favPlaylist :[{
         type: mongoose.Schema.Types.ObjectId, ref:"playlists"
     }],
-   /* joindAt: {
-        type: Date,
-        default: new Date()
-    }*/
+
 
    
 } 
