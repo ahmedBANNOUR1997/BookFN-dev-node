@@ -18,7 +18,7 @@ Postman : https://www.postman.com/downloads/
 
 // Cloning the project <br /> 
 1 - git clone https://github.com/ahmedBANNOUR1997/BookFN-dev-node.git <br />
-2 - perfom : git pull origin <br />
+2 - perfom : git pull dev-v1.0 <br />
 //Running it <br />
 3 - open terminal and perform : npm install --save <br />
 4 - perfom : npm start <br />
