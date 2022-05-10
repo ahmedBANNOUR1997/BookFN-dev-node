@@ -287,17 +287,15 @@ exports.showLike = async(req, res, next) => {
 
 exports.addLikes = (req, res, next) => {
     let BOOKID = req.body.bookid
-
-    let updatedData = {
-        like : req.body.userid
-    }
+    let USERID = req.body.userid
+    
     let updatedDatat = {
         favBook : BOOKID
     }
 
-    Book.findByIdAndUpdate(BOOKID, {$push: updatedData})
+    Book.findByIdAndUpdate(BOOKID)
     .then(() => {
-        Userdb.findByIdAndUpdate(req.body.userid, {$push: updatedDatat})
+        Userdb.findByIdAndUpdate(USERID, {$push: updatedDatat})
         .then(() => {
         res.json({
             message: 'likeadded'
