@@ -46,7 +46,8 @@ route.put("/edit-profile-picture", upload.single('img'), controller.editProfileP
         fs.unlinkSync(req.file.path)
        res.send({message : img})
     })
-    route.post('/listbookf', controller.showListBooks);
+    route.post('/listRecentlyRead', controller.showListBooks);
+    route.post('/lastRecentlyRead', controller.showLastReadBook);
     route.post('/playlistf', controller.showPlayLists );
 
     function makeid(length) {

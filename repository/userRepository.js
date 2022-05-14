@@ -177,6 +177,34 @@ const fs = require("fs");
                     })
                 })
             } 
+            
+            exports.showLastReadBook = async (req, res, next) => {
+                let userid= req.body.userid
+                
+                await Userdb.findById(userid).populate('favBook')
+                .then(response => {
+                        
+                    var lastBook = response.favBook[response.favBook.length-1]
+                    ;
+                        if(lastBook.length == 0)
+                        {
+                            res.send({
+                                message: "nandata"
+                              })
+                        }
+                        else
+                        {
+                            res.send({
+                                lastBook
+                              })
+                        }
+                })
+                .catch(error => {  
+                    res.json({
+                        message: 'an error Occured!'
+                    })
+                })
+            } 
 
             exports.showPlayLists = async (req, res, next) => {
                 let userid= req.body.userid
