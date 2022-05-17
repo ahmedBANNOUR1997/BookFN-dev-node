@@ -85,6 +85,19 @@ const fs = require("fs");
           
             }
             
+
+            exports.getUserByToken = async (req, res) => {
+                let token = req.body.token;
+              
+                try {
+                  token = jwt.verify(token, config.token_secret);
+                } catch (e) {
+                  return res.sendStatus(404);
+                }
+              
+                res.send({ token, user: await User.findOne({ email: token.email }) });
+              };
+
             exports.editProfilePicture = async (req, res, next) => {
 
 
@@ -127,8 +140,8 @@ const fs = require("fs");
 
             exports.delete = async (req, res) => {
 
-                const user = await User.findById(req.params.user_id)
-                if(user.profilePicture)
+                let user = await Userdb.findById(req.params.user_id)
+                if(user.img)
                 {
                   fs.unlink("uploads/images/"+user.profilePicture,function(err) {
                     if(err && err.code == 'ENOENT') {

@@ -27,6 +27,8 @@ route.post('/isabon', controller.showAbonne);
 route.post('/showabon', controller.showAbone);
 route.post('/showabonnement', controller.showAbonnement);
 
+route.post("/get-by-token", controller.getUserByToken)
+
 route.put("/edit-profile-picture", upload.single('img'), controller.editProfilePicture)
 /*route.post('/upimg',upload.fields([{name: 'image'}]),async(req,res)=>{
     const img = req.files.image[0].filename
