@@ -27,6 +27,11 @@ route.post('/isabon', controller.showAbonne);
 route.post('/showabon', controller.showAbone);
 route.post('/showabonnement', controller.showAbonnement);
 
+
+route.post("/forgot-password", controller.forgotPassword)
+
+route.post("/change-password", controller.changePassword)
+
 route.post("/get-by-token", controller.getUserByToken)
 
 route.put("/edit-profile-picture", upload.single('img'), controller.editProfilePicture)

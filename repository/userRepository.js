@@ -3,6 +3,10 @@ var emailSender = require('../Outils/emailApi');
 const bcrypt = require('bcrypt');
 var jwtUtils  = require('../Outils/jwt.utils');
 const fs = require("fs");
+const jwt = require("jsonwebtoken");
+const nodemailer = require("nodemailer");
+const { findById, findByIdAndUpdate } = require('../model/model');
+const bcypt = require("bcrypt");
 
  
     exports.create = async (req,res)=>{
@@ -137,6 +141,46 @@ const fs = require("fs");
                 
               
               };
+
+              exports.changePassword = async (req, res) =>{
+
+                const { email, oldPassword, newPassword} = req.body
+              
+                console.log(email, oldPassword, newPassword)
+                
+              
+                const user = await Userdb.findOne({ email });
+              
+                if (user && (await bcypt.compare(oldPassword, user.pwd))) {
+                  let user = await Userdb.findOneAndUpdate(
+                    { email: email },
+                    {
+                      $set: {
+                          pwd : await bcypt.hash(newPassword, 10)
+                      },
+                    }
+                  );
+                  if(user != null)
+                  {
+                    res.status(201).send({message:"success"});
+                
+                  }
+                  else
+                  {
+                    res.status(204).send({message:"echec"});
+                
+                  }
+                  }
+                else
+                {
+                  res.status(204).send({message:"User not found"});
+              
+                }
+              
+                
+              
+              
+              }
 
             exports.delete = async (req, res) => {
 
@@ -773,6 +817,31 @@ exports.getUserbyId = async (req, res)=>{
                     
 }
   
+
+exports.forgotPassword = async (req, res) => {
+    const user = await Userdb.findOne({ email: req.body.email });
+  
+    if (user) {
+      // token creation
+      const token = jwt.sign(
+        { _id: user._id, email: user.email },
+        "encryption-bookfn",
+        {
+          expiresIn: "3600000", // in Milliseconds (3600000 = 1 hour)
+        }
+      );
+   
+      //envoyerEmailReinitialisation(req.body.email, codeDeReinit);
+      doSendResetEmail(req.body.email, token);
+  
+      res.status(200).send({
+        message: "L'email de reinitialisation a été envoyé a " + user.email,
+      });
+    } else {
+      res.status(404).send({ message: "User innexistant" });
+    }
+  };
+
 exports.getUserid = async (req, res)=>{ 
 
     var auth  = req.body.email;
@@ -817,4 +886,42 @@ exports.getUserid = async (req, res)=>{
        return result;
     }
     
-    
+
+
+    //FUN
+    async function doSendResetEmail(email, codeDeReinit) {
+        let transporter = nodemailer.createTransport({
+          service: "gmail",
+          auth: {
+            user: "bookfn1337@gmail.com",
+            pass: "azerty1337",
+          },
+        });
+      
+        transporter.verify(function (error, success) {
+          if (error) {
+            console.log(error);
+            console.log("Server not ready");
+          } else {
+            console.log("Server is ready to take our messages");
+          }
+        });
+      
+        const mailOptions = {
+          from: "bookfn1337@gmail.com",
+          to: email,
+          subject: "Reinitialisation de votre mot de passe - Book Fanatic",
+          html:
+            "<h3>Vous avez envoyé une requete de reinitialisation de mot de passe </h3><p>Entrez ce code dans l'application pour proceder : <b style='color : blue'>" +
+            codeDeReinit +
+            "</b></p>",
+        };
+      
+        transporter.sendMail(mailOptions, function (error, info) {
+          if (error) {
+            console.log(error);
+          } else {
+            console.log("Email sent : " + info.response);
+          }
+        });
+      }
