@@ -134,7 +134,6 @@ exports.store = async(req, res) => {
 
     const bookcoverImage = req.files.coverImage[0].filename;
     const bookfilePDF = req.files.filePDF[0].filename;
-    const bookfileAudio = req.files.fileAudio[0].filename;
 
 
     const book = new Book({
@@ -145,8 +144,7 @@ exports.store = async(req, res) => {
         coverImage : 'http://localhost:3000/uploads/books/' + bookcoverImage, 
         category:  req.body.category,
         nbPages:  req.body.nbPages,
-        filePDF:  'http://localhost:3000/uploads/books/' + bookfilePDF, 
-        fileAudio:  'http://localhost:3000/uploads/books/' + bookfileAudio, 
+        filePDF:  'http://localhost:3000/uploads/books/' + bookfilePDF,
         userid: req.body.userid
     })
     await book.save()
@@ -167,7 +165,6 @@ exports.update = (req, res, next) => {
 
     const bookcoverImage = req.files.coverImage[0].filename;
     const bookfilePDF = req.files.filePDF[0].filename;
-    const bookfileAudio = req.files.fileAudio[0].filename;
 
     let updatedData = {
             title : req.body.title,
@@ -177,8 +174,7 @@ exports.update = (req, res, next) => {
             coverImage : 'http://localhost:3000/uploads/books/' + bookcoverImage, 
             category : req.body.category,
             nbPages : req.body.nbPages,
-            filePDF:  'http://localhost:3000/uploads/books/' + bookfilePDF, 
-            fileAudio:  'http://localhost:3000/uploads/books/' + bookfileAudio, 
+            filePDF:  'http://localhost:3000/uploads/books/' + bookfilePDF,
             userid: req.body.userid
     }
 

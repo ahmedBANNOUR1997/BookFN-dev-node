@@ -38,11 +38,6 @@ var bookschema = new mongoose.Schema({
         required : true,
         default: "blank.pdf" 
     },
-    fileAudio :{
-        type: String,
-        required: true,
-        default: "saunders.mp3" 
-    },
     like : [{
         type: mongoose.Schema.Types.ObjectId, ref:"users"
     }],

@@ -23,23 +23,7 @@ const fs = require("fs");
  *  */
 routet.get('/allBooks',controller.index)
 routet.get('/allBooksWithViews',controller.findViewsBooks)
-
-routet.post('/upAudioBook',upload.fields([{name:'fileAudio'}]),async(req,res)=>{
-        const files = req.files.file[0].filename
-        var aux = 0
-        
-        if(req.files.file[0].size >= 30000000)
-        {
-        aux = 1
-        }
-        else
-        {
-         aux = 0
-        }
-        console.log(aux)
-        res.send({message : files , isPodcast : aux.toString()})
-    })
-    routet.post('/upPDF',upload.fields([{name:'filePDF'}]),async(req,res)=>{
+routet.post('/upPDF',upload.fields([{name:'filePDF'}]),async(req,res)=>{
         const files = req.files.file[0].filename
         res.send({message : files})
     })
@@ -65,8 +49,6 @@ routet.post('/addbook',upload.fields([{
   name: 'coverImage', maxCount: 1
 }, {
   name: 'filePDF', maxCount: 1
-}, {
-  name: 'fileAudio', maxCount: 1
 }]),controller.store)
 
 routet.post('/showbook',controller.show)
@@ -75,8 +57,6 @@ routet.post('/updateBook',upload.fields([{
   name: 'coverImage', maxCount: 1
 }, {
   name: 'filePDF', maxCount: 1
-}, {
-  name: 'fileAudio', maxCount: 1
 }]),controller.update)
 
 routet.post('/deleteBook',controller.deleteallLikes)
