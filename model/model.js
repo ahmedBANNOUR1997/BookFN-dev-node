@@ -11,12 +11,12 @@ var schema = new mongoose.Schema({
         required: true,
         unique: true  
     },
-    email : {
+    email :{
         type: String,
         required: true,
         unique: true
     },
-    pwd : {
+    pwd :{
         type: String,
         required: false
         

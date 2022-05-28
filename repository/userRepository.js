@@ -819,6 +819,7 @@ exports.getUserbyId = async (req, res)=>{
   
 
 exports.forgotPassword = async (req, res) => {
+    const codeDeReinit = req.body.codeDeReinit;
     const user = await Userdb.findOne({ email: req.body.email });
   
     if (user) {
@@ -831,16 +832,53 @@ exports.forgotPassword = async (req, res) => {
         }
       );
    
-      //envoyerEmailReinitialisation(req.body.email, codeDeReinit);
-      doSendResetEmail(req.body.email, token);
+      doSendResetEmail(req.body.email, codeDeReinit);
   
       res.status(200).send({
-        message: "L'email de reinitialisation a été envoyé a " + user.email,
+        message: "The Reset Mail has been sent to " + user.email,
       });
     } else {
       res.status(404).send({ message: "User innexistant" });
     }
   };
+
+exports.resetPass = async (req, res) =>{
+
+    const { email, newPassword} = req.body  
+  
+    const user = await Userdb.findOne({ email });
+  
+  
+    if (user ) {
+      let user = await Userdb.findOneAndUpdate(
+        { email: email },
+        {
+          $set: {
+              pwd : await bcypt.hash(newPassword, 10)
+          },
+        }
+      );
+      if(user != null)
+      {
+        res.status(201).send({message:"success"});
+    
+      }
+      else
+      {
+        res.status(204).send({message:"echec"});
+    
+      }
+      }
+    else
+    {
+      res.status(204).send({message:"User not found"});
+  
+    }
+  
+    
+  
+  
+  }
 
 exports.getUserid = async (req, res)=>{ 
 
@@ -910,9 +948,9 @@ exports.getUserid = async (req, res)=>{
         const mailOptions = {
           from: "bookfn1337@gmail.com",
           to: email,
-          subject: "Reinitialisation de votre mot de passe - Book Fanatic",
+          subject: "Reset Password Request - Book Fanatic",
           html:
-            "<h3>Vous avez envoyé une requete de reinitialisation de mot de passe </h3><p>Entrez ce code dans l'application pour proceder : <b style='color : blue'>" +
+            "<h3>You have requested password reset </h3><p>Enter this code in your application to proceed with reset password : <b style='color : blue'>" +
             codeDeReinit +
             "</b></p>",
         };
