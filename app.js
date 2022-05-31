@@ -36,6 +36,7 @@ app.use('/api', require('./routes/booksroute'))
 app.use('/api', require('./routes/playlistroute'))
 app.use("/api/messagerie", require("./routes/messagerie-route"))
 
+//app.listen(3000, '0.0.0.0');
 
 app.listen(PORT, ()=> { console.log(`Server is running on http://localhost:${PORT}`)});
 
