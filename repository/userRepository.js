@@ -1,58 +1,49 @@
 var Userdb = require('../model/model');
 var emailSender = require('../Outils/emailApi');
-const bcrypt = require('bcrypt');
+const bcrypt = require("bcrypt");
 var jwtUtils  = require('../Outils/jwt.utils');
 const fs = require("fs");
 const jwt = require("jsonwebtoken");
 const nodemailer = require("nodemailer");
 const { findById, findByIdAndUpdate } = require('../model/model');
-const bcypt = require("bcrypt");
+
 
  
-    exports.create = async (req,res)=>{
+exports.create = async (req,res)=>{
     
-        if(!req.body){
-            res.status(400).send({ message : "Content can not be emtpy!"});
-            return;
-        }
-        const hash = bcrypt.hashSync(req.body.pwd,10)
-      const randCode = randomCode(10000,99999) 
+    if(!req.body){
+        res.status(400).send({ message : "Content can not be emtpy!"});
+        return;
+    }
+    const hash = bcrypt.hashSync(req.body.pwd,10)
+  const randCode = randomCode(10000,99999) 
 
-        const user = new Userdb({
-            firstName : req.body.firstName.toLowerCase(),
-            lastName : req.body.lastName.toLowerCase(),
-            email : req.body.email.toLowerCase(),
-            pwd : hash,
-            emailCode : randCode
-        })
+    const user = new Userdb({
+        firstName : req.body.firstName.toLowerCase(),
+        lastName : req.body.lastName.toLowerCase(),
+        email : req.body.email.toLowerCase(),
+        pwd : hash,
+        emailCode : randCode
+    })
+    
+    if (await Userdb.findOne({ email: req.body.email })) {
+        res.status(403).send({ message: "This email is already associated within an existing or previous account, please try another one !" });
+      } 
+      else {
 
-        user.save(user)
-            .then(data => {
-               res.send({message  : randCode.toString()})
-               var mailOptions = {
-                from: 'ahmed.bannour@esprit.tn',
-                to: req.body.email,
-                subject: 'Verification de votre email',
-                text: 'le code de verification :'+randCode
-              };
-              
-
-              emailSender.transporter.sendMail(mailOptions, function(error, info){
-                if (error) {
-                  console.log(error);
-                  } else {
-                    console.log('Email sent: ' + info.response);
-                  }
-         });
-
-            })
-            .catch(err =>{
-                res.status(500).send({
-                    message : err.message || "Some error occurred while creating a create operation"
-                });
+     user.save(user)
+    .then(data => {
+        res.send({message : "added"})
+    })
+    .catch(err =>{
+            res.status(500).send({
+                message : err.message
             });
-      
-        }
+        });
+  
+    }
+}
+    
 
         exports.createWithgoogle = async (req,res)=>{
     
@@ -70,11 +61,6 @@ const bcypt = require("bcrypt");
                 img : req.body.img
             
             })
-    
-    
-    
-           
-             
             
             user.save(user)
                 .then(data => {
@@ -854,7 +840,7 @@ exports.resetPass = async (req, res) =>{
         { email: email },
         {
           $set: {
-              pwd : await bcypt.hash(newPassword, 10)
+              pwd : await bcrypt.hash(newPassword, 10)
           },
         }
       );
@@ -932,7 +918,7 @@ exports.getUserid = async (req, res)=>{
           service: "gmail",
           auth: {
             user: "bookfn1337@gmail.com",
-            pass: "azerty1337",
+            pass: "aesmbhacwhhiqhue",
           },
         });
       
